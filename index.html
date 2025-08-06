@@ -759,7 +759,7 @@
         categories.forEach(cat => {
         if (cat.id !== 'all') {
             const li = document.createElement('li');
-            li.innerHTML = `<a class="dropdown-item" href="#" onclick="filterByCategory('${cat.id}')">${cat.name[currentLanguage]}</a>`;
+            li.innerHTML = `<a class="dropdown-item category-item" href="#" data-id="${cat.id}">${cat.name[currentLanguage]}</a>`;
             menu.appendChild(li);
         }
         });
@@ -840,43 +840,49 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialize theme from localStorage
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            currentTheme = savedTheme;
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            updateThemeIcon();
-        }
+        let dropdownClosedByItem = false;
 
-        // Render initial categories and products
-        renderCategories();
-        renderCategoryFilters();
-        renderProducts();
+        const dropdownToggle = document.querySelector('[data-bs-toggle="dropdown"]');
+        const dropdownMenu = document.getElementById('categoryMenu');
+        const dropdownInstance = bootstrap.Dropdown.getOrCreateInstance(dropdownToggle);
+        const navbarCollapse = document.getElementById('navbarNav');
+        const navbar = document.querySelector('.navbar');
 
-        // Add click event to navbar links to collapse the menu on mobile
-        document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-            link.addEventListener('click', function () {
-                const navbarCollapse = document.getElementById('navbarNav');
-                if (navbarCollapse.classList.contains('show')) {
-                    // Bootstrap 5 uses Collapse instance
-                    const collapseInstance = bootstrap.Collapse.getOrCreateInstance(navbarCollapse);
-                    collapseInstance.hide();
-                }
-            });
+        // ✅ Handle item click
+        dropdownMenu.addEventListener('click', function (e) {
+            const item = e.target.closest('.category-item');
+            if (item) {
+            e.preventDefault();
+            const catId = item.dataset.id;
+            filterByCategory(catId);
+
+            dropdownClosedByItem = true;
+            dropdownInstance.hide();
+            } else {
+            e.stopPropagation();
+            }
         });
 
-        // Add click event to body to close navbar if open (mobile)
-        document.body.addEventListener('click', function (e) {
-            // Only close if click is outside navbar and navbar is open
-            const navbarCollapse = document.getElementById('navbarNav');
-            const isNavbarOpen = navbarCollapse.classList.contains('show');
-            const isClickInsideNavbar = navbarCollapse.contains(e.target) || e.target.classList.contains('navbar-toggler');
-            if (isNavbarOpen && !isClickInsideNavbar) {
+        // ✅ Handle dropdown close
+        dropdownToggle.parentElement.addEventListener('hidden.bs.dropdown', function () {
+            if (dropdownClosedByItem) {
+            if (navbarCollapse.classList.contains('show')) {
                 const collapseInstance = bootstrap.Collapse.getOrCreateInstance(navbarCollapse);
                 collapseInstance.hide();
             }
+            }
+            dropdownClosedByItem = false;
         });
-    });
+
+        // ✅ Handle click outside navbar
+        document.addEventListener('click', function (e) {
+            const clickedInsideNavbar = navbar.contains(e.target);
+            if (!clickedInsideNavbar && navbarCollapse.classList.contains('show')) {
+            const collapseInstance = bootstrap.Collapse.getOrCreateInstance(navbarCollapse);
+            collapseInstance.hide();
+            }
+        });
+        });
 
     </script>
 </body>
