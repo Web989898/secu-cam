@@ -542,6 +542,31 @@
             margin-bottom: 1rem;
             opacity: 0.5;
         }
+
+        /* Scrollable Dropdown */
+        .scrollable-dropdown {
+            max-height: 300px;       /* អាចកំណត់តាម UI */
+            overflow-y: auto;
+            scrollbar-width: thin;   /* Firefox */
+            scrollbar-color: #ccc transparent;
+        }
+
+        /* Chrome, Edge, Safari */
+        .scrollable-dropdown::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollable-dropdown::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scrollable-dropdown::-webkit-scrollbar-thumb {
+            background-color: #aaa;
+            border-radius: 3px;
+        }
+        @media (max-width: 768px) {
+            .scrollable-dropdown {
+            max-height: 200px;
+            }
+        }
     </style>
     
 </head>
@@ -566,7 +591,7 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-translate="categories">
                             Categories
                         </a>
-                        <ul class="dropdown-menu" id="categoryMenu">
+                        <ul class="dropdown-menu scrollable-dropdown" id="categoryMenu">
                             <!-- Categories will be populated by JavaScript -->
                         </ul>
                     </li>
@@ -575,6 +600,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="./contact.html" data-translate="contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-translate="repairService">Repair Service</a>
                     </li>
                 </ul>
             </div>
@@ -678,6 +706,7 @@
     <script src="./js/handleAddToCard.js"></script>
     <script src="./js/viewCart.js"></script>
     <script src="./js/renderProductCart.js"></script>
+    <script src="./js/categoryScroll.js"></script>
     <script>
         // Global Variables
         let currentLanguage = 'en';
